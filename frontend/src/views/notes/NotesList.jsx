@@ -5,19 +5,27 @@ import { useAuthStore } from '../../store/auth';
 import './Notes.css';
 
 const NotesList = () => {
+    // State management for notes data and UI states
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newNote, setNewNote] = useState({ title: '', content: '' });
+    
+    // Hooks for API calls, navigation, and user data
     const api = useAxios();
     const navigate = useNavigate();
     const allUserData = useAuthStore((state) => state.allUserData);
 
+    // Fetch notes when component mounts
     useEffect(() => {
         fetchNotes();
     }, []);
 
+    /**
+     * Fetch all notes for the current user from the API
+     * Updates loading state and handles errors appropriately
+     */
     const fetchNotes = async () => {
         try {
             setLoading(true);
@@ -32,16 +40,25 @@ const NotesList = () => {
         }
     };
 
+    /**
+     * Handle creation of a new note
+     * Validates input and updates the notes list on success
+     */
     const handleCreateNote = async (e) => {
         e.preventDefault();
+        
+        // Basic validation for required fields
         if (!newNote.title.trim() || !newNote.content.trim()) {
             alert('Please fill in both title and content');
             return;
         }
 
         try {
+            // Create new note via API
             const response = await api.post('/notes/', newNote);
+            // Add new note to the beginning of the list (newest first)
             setNotes([response.data, ...notes]);
+            // Reset form and hide create form
             setNewNote({ title: '', content: '' });
             setShowCreateForm(false);
         } catch (error) {
@@ -50,6 +67,10 @@ const NotesList = () => {
         }
     };
 
+    /**
+     * Format date string for display
+     * Converts ISO date to readable format
+     */
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -60,6 +81,7 @@ const NotesList = () => {
         });
     };
 
+    // Loading state UI
     if (loading) {
         return (
             <div className="notes-container">
@@ -70,6 +92,7 @@ const NotesList = () => {
 
     return (
         <div className="notes-container">
+            {/* Header section with user info and actions */}
             <header className="notes-header">
                 <div className="header-content">
                     <h1>My Notes</h1>
@@ -90,6 +113,7 @@ const NotesList = () => {
                 </div>
             </header>
 
+            {/* Conditional rendering of create note form */}
             {showCreateForm && (
                 <div className="create-note-form">
                     <h3>Create New Note</h3>
@@ -106,7 +130,7 @@ const NotesList = () => {
                                     })
                                 }
                                 className="form-input"
-                                maxLength={200}
+                                maxLength={200} // Enforce model constraint
                             />
                         </div>
                         <div className="form-group">
@@ -139,15 +163,19 @@ const NotesList = () => {
                 </div>
             )}
 
+            {/* Error message display */}
             {error && <div className="error-message">{error}</div>}
 
+            {/* Notes grid or empty state */}
             <div className="notes-grid">
                 {notes.length === 0 ? (
+                    // Empty state when no notes exist
                     <div className="empty-state">
                         <h3>No notes yet</h3>
                         <p>Create your first note to get started!</p>
                     </div>
                 ) : (
+                    // Render notes grid
                     notes.map((note) => (
                         <div key={note.id} className="note-card">
                             <Link
@@ -156,6 +184,7 @@ const NotesList = () => {
                             >
                                 <h3 className="note-title">{note.title}</h3>
                                 <p className="note-preview">
+                                    {/* Truncate long content for preview */}
                                     {note.content.length > 150
                                         ? `${note.content.substring(0, 150)}...`
                                         : note.content}
