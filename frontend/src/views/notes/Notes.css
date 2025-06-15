@@ -213,6 +213,8 @@
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
+    color: black;
+    box-sizing: border-box;
     background: white;
 }
 
@@ -229,6 +231,8 @@
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
+    color: black;
+    box-sizing: border-box;
     resize: vertical;
     min-height: 120px;
     transition: all 0.3s ease;
