@@ -7,6 +7,8 @@ import PrivateRoute from './layouts/PrivateRoute';
 import Logout from './views/logout';
 import Private from './views/private';
 import Register from './views/register';
+import NotesList from './views/notes/NotesList';
+import NoteDetail from './views/notes/NoteDetail';
 
 function App() {
     return (
@@ -26,7 +28,23 @@ function App() {
                             </PrivateRoute>
                         }
                     />
-                    <Route path="/" element={<Home />} />
+                    <Route
+                        path="/"
+                        element={
+                            <PrivateRoute>
+                                <NotesList />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/notes/:id"
+                        element={
+                            <PrivateRoute>
+                                <NoteDetail />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route path="/home" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/logout" element={<Logout />} />

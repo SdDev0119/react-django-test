@@ -21,6 +21,9 @@ const LoggedInView = ({ user }) => {
     return (
         <div>
             <h1>Welcome {user.username}</h1>
+            <Link to="/">
+                <button>My Notes</button>
+            </Link>
             <Link to="/private">
                 <button>Private</button>
             </Link>
